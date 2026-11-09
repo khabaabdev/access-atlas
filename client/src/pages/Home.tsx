@@ -91,19 +91,36 @@ function scrollToId(id: string) {
 export default function Home() {
   const [topic, setTopic] = useState<TopicKey>("topic");
   const [confidence, setConfidence] = useState<ConfidenceKey>("low");
+  const [customGoal, setCustomGoal] = useState("");
   const [built, setBuilt] = useState(false);
   const [revealed, setRevealed] = useState(false);
   const [reflection, setReflection] = useState("");
+  const [copied, setCopied] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
   const path = useMemo(() => learningPaths[topic], [topic]);
   const confidenceLabel = confidenceOptions.find((item) => item.id === confidence)?.label ?? "Not yet";
+  const learnerGoal = customGoal.trim() || path.shortLabel;
+  const personalizedFirstStep = customGoal.trim()
+    ? `Start with one question about “${customGoal.trim()}”: what is the first thing you need to be able to explain or do?`
+    : path.firstStep;
 
   function buildPlan() {
     setBuilt(true);
     setRevealed(false);
     setReflection("");
     window.setTimeout(() => scrollToId("plan"), 80);
+  }
+
+  async function copyPlan() {
+    const planText = `Access Atlas — ${learnerGoal}\n\nFirst step: ${personalizedFirstStep}\n\n20-minute plan:\n${path.steps.map((step) => `${step.time} — ${step.title}: ${step.detail}`).join("\n")}\n\nNext step: ${path.nextStep}`;
+    try {
+      await navigator.clipboard.writeText(planText);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1800);
+    } catch {
+      setCopied(false);
+    }
   }
 
   return (
@@ -203,6 +220,8 @@ export default function Home() {
                   </button>
                 ))}
               </div>
+              <label className="goal-input-label" htmlFor="learner-goal">OPTIONAL / MAKE IT YOURS</label>
+              <div className="goal-input-wrap"><input id="learner-goal" value={customGoal} onChange={(event) => { setCustomGoal(event.target.value); setBuilt(false); }} placeholder="e.g. understand percentages" /><span>{customGoal.length}/60</span></div>
               <div className="confidence-block">
                 <div className="demo-step-label">STEP 2 <span>/ 3</span></div>
                 <h3>How does it feel right now?</h3>
@@ -232,7 +251,7 @@ export default function Home() {
                   <div className="result-kicker"><span className="success-mark"><Check size={13} /></span> Your starting point <span className="result-kicker-tag">{confidenceLabel}</span></div>
                   <div className="result-heading-row"><h3>{path.shortLabel}, made smaller.</h3><span className="time-badge"><Clock3 size={14} /> 20 min</span></div>
                   <p className="result-context">{path.context}</p>
-                  <div className="first-step-box"><span className="first-step-label">FIRST STEP</span><strong>{path.firstStep}</strong></div>
+                  <div className="first-step-box"><span className="first-step-label">FIRST STEP FOR · {learnerGoal.toUpperCase()}</span><strong>{personalizedFirstStep}</strong></div>
                   <div className="micro-plan-label">YOUR MICRO-PLAN</div>
                   <div className="micro-plan">
                     {path.steps.map((step, index) => (
@@ -246,6 +265,7 @@ export default function Home() {
                   ) : (
                     <div className="next-step-box"><div className="next-step-title"><span><Sparkles size={14} /> REVEALED WHEN READY</span><Check size={16} /></div><strong>{path.nextStep}</strong><p>Keep it small. The goal is a breadcrumb, not a finish line.</p></div>
                   )}
+                  <div className="result-actions"><button onClick={copyPlan}>{copied ? <Check size={14} /> : <Feather size={14} />}{copied ? "Copied" : "Copy plan"}</button><button onClick={() => window.print()}><ArrowUpRight size={14} /> Print / save PDF</button></div>
                   <div className="reflection-block">
                     <div className="micro-plan-label">AFTER YOUR SESSION</div>
                     <p>How manageable did this feel?</p>
@@ -292,6 +312,7 @@ export default function Home() {
             <div className="evidence-block"><div className="evidence-icon"><CircleHelp size={17} /></div><h3>Known limitations</h3><p>The plan library is hand-authored for three synthetic scenarios. It does not yet adapt to reading level, collect outcomes, or replace a teacher, tutor, or learning specialist.</p><a href="#credits" className="inline-link">Read the credits <ArrowUpRight size={14} /></a></div>
           </div>
           <div className="visual-evidence"><div><div className="evidence-icon"><Eye size={17} /></div><h3>Visual evidence</h3><p>Two captured views show the responsive landing page, empty demo state, story, before/after example, and transparent credits. Use them as Devpost screenshots or as a quick visual walkthrough.</p></div><div className="visual-links"><a href="/screenshots/access-atlas-desktop.png" target="_blank" rel="noreferrer"><span>DESKTOP CAPTURE</span><strong>Open 1280 × full-page <ArrowUpRight size={14} /></strong></a><a href="/screenshots/access-atlas-mobile.png" target="_blank" rel="noreferrer"><span>MOBILE CAPTURE</span><strong>Open 375 × full-page <ArrowUpRight size={14} /></strong></a></div></div>
+          <div className="impact-plan"><div><div className="eyebrow">05 / Beyond the demo</div><h3>Our next test is simple: does the learner begin?</h3><p>We would run five permission-cleared sessions with synthetic or volunteer scenarios before claiming impact. The MVP gives us a way to observe the first useful signals without collecting private academic records.</p></div><div className="impact-metrics"><span><strong>01</strong><b>Time to first action</b><small>Can a learner begin in under 2 minutes?</small></span><span><strong>02</strong><b>Manageability</b><small>Does the session feel doable, not just clear?</small></span><span><strong>03</strong><b>Next-session intent</b><small>Do they know where they would return?</small></span></div></div>
           <div id="credits" className="credits-panel"><div className="credits-title"><Feather size={17} /> Transparent credits</div><div className="credits-copy"><p><strong>Examples:</strong> Synthetic scenarios only. No private student records or real grades are used. Any future learner research would require permission-cleared participation.</p><p><strong>Tools + libraries:</strong> React, TypeScript, Vite, Tailwind CSS, lucide-react, and the managed Webdev starter. <strong>Datasets:</strong> None. <strong>Assets:</strong> Interface shapes and icons are original / library-provided; no stock photos.</p><p><strong>AI assistance:</strong> AI-assisted ideation, copy shaping, and code generation were used; the product direction, requirements mapping, interaction design, and review were human-led.</p><p><strong>Pre-existing foundation:</strong> The managed React starter, project scaffolding, and baseline tooling existed before the event contribution window. Product-specific content, visual system, interactive flow, and submission story were built during October 17–November 20, 2026.</p></div></div>
         </section>
       </main>

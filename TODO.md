@@ -17,3 +17,8 @@
 - [x] The learning story covers the problem, intended users, solution, tools, challenges, and lessons learned.
 - [x] The page includes working demo guidance, setup instructions, limitations, screenshots guidance, and a short walkthrough outline.
 - [x] The page states that examples are synthetic or permission-cleared, no private student records or real grades are used, and credits libraries, datasets, assets, AI assistance, and pre-existing work.
+
+## Hackathon differentiators
+- [x] The learner can optionally enter their own topic or goal, and the generated first step is personalized to that input.
+- [x] The learner can copy the generated plan or use the browser print flow to save it as a practical one-page study plan.
+- [x] The project includes a transparent validation hypothesis with three concrete future signals: time to first action, perceived manageability, and next-session intent.

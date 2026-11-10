@@ -162,3 +162,13 @@ p { line-height: 1.58; }
 .impact-metrics span:last-child { border-bottom: 0; }.impact-metrics strong { grid-row: span 2; color: var(--orange-dark); font-family: var(--mono); font-size: 10px; }.impact-metrics b { font-size: 11px; }.impact-metrics small { color: #746a4f; font-size: 10px; }
 @media (max-width: 900px) { .impact-plan { grid-template-columns: 1fr; gap: 24px; } }
 @media print { .top-strip, .site-header, .mobile-menu, .hero-actions, .demo-panel, .visual-links, .site-footer, .result-actions { display: none !important; } .page-width { width: 100%; }.demo-layout { display: block; border: 0; }.result-panel { padding: 0; }.result-empty { min-height: auto; }.evidence-section, .story-section, .before-after-section { padding-top: 35px; } }
+
+/* Product-only closing sections */
+.about-section { padding-top: 106px; }
+.about-card { display: grid; grid-template-columns: .9fr 1.1fr; gap: 65px; align-items: center; padding: 36px 30px; background: var(--blue); border: 1px solid var(--ink); }
+.about-card h2 { max-width: 340px; margin: 13px 0 0; font-family: var(--serif); font-size: 42px; line-height: 1.02; letter-spacing: -.05em; font-weight: 500; }
+.about-card p { max-width: 510px; margin: 0; color: #465257; font-size: 14px; }
+.final-cta { display: flex; align-items: center; justify-content: space-between; gap: 30px; padding-top: 118px; padding-bottom: 105px; }
+.final-cta h2 { margin: 12px 0 0; font-family: var(--serif); font-size: clamp(38px, 5vw, 60px); line-height: 1; letter-spacing: -.05em; font-weight: 500; }
+.final-cta .primary-button { flex: 0 0 auto; }
+@media (max-width: 900px) { .about-card { grid-template-columns: 1fr; gap: 20px; }.final-cta { align-items: flex-start; flex-direction: column; padding-top: 88px; padding-bottom: 75px; } }

@@ -12,6 +12,7 @@ import {
   Menu,
   Sparkles,
   Target,
+  Type,
   X,
   Zap,
 } from "lucide-react";
@@ -80,6 +81,12 @@ const confidenceOptions: { id: ConfidenceKey; label: string; note: string }[] = 
   { id: "ready", label: "Ready-ish", note: "I can try a stretch" },
 ];
 
+const confidenceAdjustments: Record<ConfidenceKey, { label: string; context: string; firstStepPrefix: string }> = {
+  low: { label: "Gentle start", context: "We kept the language simple and made the first move extra small.", firstStepPrefix: "Start with one question" },
+  some: { label: "Steady start", context: "We balanced a clear explanation with one small practice move.", firstStepPrefix: "Write one useful question" },
+  ready: { label: "Stretch start", context: "We added a little more practice so you can test the idea as you go.", firstStepPrefix: "Name the outcome you want" },
+};
+
 function scrollToId(id: string) {
   document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
 }
@@ -92,14 +99,36 @@ export default function Home() {
   const [revealed, setRevealed] = useState(false);
   const [reflection, setReflection] = useState("");
   const [copied, setCopied] = useState(false);
+  const [focusMode, setFocusMode] = useState(false);
+  const [largeText, setLargeText] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
   const path = useMemo(() => learningPaths[topic], [topic]);
   const confidenceLabel = confidenceOptions.find((item) => item.id === confidence)?.label ?? "Not yet";
   const learnerGoal = customGoal.trim() || path.shortLabel;
+  const adjustment = confidenceAdjustments[confidence];
+  const adaptiveSteps = useMemo(() => {
+    if (confidence === "low") {
+      return path.steps.map((step, index) => index === 0
+        ? { ...step, title: "Make the question smaller", detail: "Use one sentence. Circle only one unfamiliar word." }
+        : index === 3
+          ? { ...step, title: "Leave one breadcrumb", detail: "Write the next question without solving it today." }
+          : step);
+    }
+    if (confidence === "ready") {
+      return path.steps.map((step, index) => index === 0
+        ? { ...step, title: "Name the outcome", detail: "Write what you want to be able to explain or make." }
+        : index === 2
+          ? { ...step, title: "Test your understanding", detail: "Try a fresh example without looking back at the notes." }
+          : step);
+    }
+    return path.steps;
+  }, [confidence, path]);
   const personalizedFirstStep = customGoal.trim()
-    ? `Start with one question about “${customGoal.trim()}”: what is the first thing you need to be able to explain or do?`
-    : path.firstStep;
+    ? `${adjustment.firstStepPrefix} about “${customGoal.trim()}”: what is the first thing you need to be able to explain or do?`
+    : confidence === "ready"
+      ? `Write the result you want from ${path.shortLabel.toLowerCase()} in one sentence, then choose one example to try.`
+      : path.firstStep;
 
   function buildPlan() {
     setBuilt(true);
@@ -109,7 +138,7 @@ export default function Home() {
   }
 
   async function copyPlan() {
-    const planText = `Access Atlas — ${learnerGoal}\n\nFirst step: ${personalizedFirstStep}\n\n20-minute plan:\n${path.steps.map((step) => `${step.time} — ${step.title}: ${step.detail}`).join("\n")}\n\nNext step: ${path.nextStep}`;
+    const planText = `Access Atlas — ${learnerGoal}\n\nFirst step: ${personalizedFirstStep}\n\n20-minute plan:\n${adaptiveSteps.map((step) => `${step.time} — ${step.title}: ${step.detail}`).join("\n")}\n\nNext step: ${path.nextStep}`;
     try {
       await navigator.clipboard.writeText(planText);
       setCopied(true);
@@ -120,7 +149,7 @@ export default function Home() {
   }
 
   return (
-    <div className="site-shell">
+    <div className={`site-shell ${focusMode ? "focus-mode" : ""} ${largeText ? "large-text" : ""}`}>
       <header className="site-header">
         <a className="brand" href="#top" aria-label="Access Atlas home">
           <span className="brand-mark"><Compass size={20} strokeWidth={2.3} /></span>
@@ -138,6 +167,11 @@ export default function Home() {
           {menuOpen ? <X size={20} /> : <Menu size={20} />}
         </button>
       </header>
+      <div className="access-toolbar page-width" aria-label="Reading options">
+        <span>Reading options</span>
+        <button onClick={() => setFocusMode((value) => !value)}><Eye size={13} /> {focusMode ? "Exit focus view" : "Focus view"}</button>
+        <button onClick={() => setLargeText((value) => !value)}><Type size={13} /> {largeText ? "Default text" : "Larger text"}</button>
+      </div>
       {menuOpen && (
         <div className="mobile-menu">
           <a href="#story" onClick={() => setMenuOpen(false)}>How it works</a>
@@ -233,11 +267,11 @@ export default function Home() {
                 <div className="result-content">
                   <div className="result-kicker"><span className="success-mark"><Check size={13} /></span> Your starting point <span className="result-kicker-tag">{confidenceLabel}</span></div>
                   <div className="result-heading-row"><h3>{path.shortLabel}, made smaller.</h3><span className="time-badge"><Clock3 size={14} /> 20 min</span></div>
-                  <p className="result-context">{path.context}</p>
+                  <p className="result-context">{path.context} {adjustment.context}</p>
                   <div className="first-step-box"><span className="first-step-label">FIRST STEP FOR · {learnerGoal.toUpperCase()}</span><strong>{personalizedFirstStep}</strong></div>
                   <div className="micro-plan-label">YOUR MICRO-PLAN</div>
                   <div className="micro-plan">
-                    {path.steps.map((step, index) => (
+                    {adaptiveSteps.map((step, index) => (
                       <div className="micro-step" key={step.title}>
                         <span className="micro-index">0{index + 1}</span><span className="micro-time">{step.time}</span><div><strong>{step.title}</strong><p>{step.detail}</p></div>
                       </div>

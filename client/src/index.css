@@ -172,3 +172,18 @@ p { line-height: 1.58; }
 .final-cta h2 { margin: 12px 0 0; font-family: var(--serif); font-size: clamp(38px, 5vw, 60px); line-height: 1; letter-spacing: -.05em; font-weight: 500; }
 .final-cta .primary-button { flex: 0 0 auto; }
 @media (max-width: 900px) { .about-card { grid-template-columns: 1fr; gap: 20px; }.final-cta { align-items: flex-start; flex-direction: column; padding-top: 88px; padding-bottom: 75px; } }
+
+/* Learner access controls */
+.access-toolbar { display: flex; align-items: center; justify-content: flex-end; gap: 7px; min-height: 39px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); color: #8c8378; font-family: var(--mono); font-size: 9px; }
+.access-toolbar > span { margin-right: 4px; color: var(--orange-dark); letter-spacing: .1em; text-transform: uppercase; }
+.access-toolbar button { display: inline-flex; align-items: center; gap: 5px; padding: 6px 8px; color: #70695f; background: transparent; border: 1px solid transparent; border-radius: 3px; cursor: pointer; font-family: var(--mono); font-size: 9px; }
+.access-toolbar button:hover, .access-toolbar button:focus-visible { color: var(--orange-dark); border-color: var(--orange); outline: none; }
+.focus-mode .hero-art { display: none; }
+.focus-mode .hero-section { grid-template-columns: 1fr; min-height: auto; padding-bottom: 84px; }
+.focus-mode .hero-copy { max-width: 720px; }
+.focus-mode .hero-copy h1 { max-width: 680px; }
+.large-text { font-size: 108%; }
+.large-text .hero-lede, .large-text .section-intro > p, .large-text .about-card p { font-size: 16px; }
+.large-text .choice-card small, .large-text .confidence-chip small, .large-text .micro-step p { font-size: 11px; }
+@media (max-width: 900px) { .access-toolbar { width: min(100% - 40px, 680px); justify-content: flex-start; overflow-x: auto; white-space: nowrap; } }
+@media (max-width: 560px) { .access-toolbar { width: calc(100% - 30px); }.access-toolbar > span { margin-right: auto; } }

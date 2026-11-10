@@ -22,3 +22,8 @@
 - [x] The learner can optionally enter their own topic or goal, and the generated first step is personalized to that input.
 - [x] The learner can copy the generated plan or use the browser print flow to save it as a practical one-page study plan.
 - [x] The project includes a transparent validation hypothesis with three concrete future signals: time to first action, perceived manageability, and next-session intent.
+
+## Adaptive access improvements
+- [x] Confidence selection changes the generated plan: gentle, steady, and stretch modes use different action language and practice emphasis.
+- [x] The public product includes Focus view and Larger text reading controls, with keyboard-visible focus states and reduced visual distraction in Focus view.
+- [x] Devpost-facing narrative is stored separately in DEVPOST_SUBMISSION.md and is not rendered in the public product UI.

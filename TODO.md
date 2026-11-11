@@ -1,29 +1,19 @@
-# Access Atlas MVP — outcome checklist
+# Access Atlas engineering checklist
 
-## Submission-ready project story
-- [x] The landing page names the project “Access Atlas — Make the next step visible,” includes a short pitch, and includes a visible team placeholder for every contributing team member.
-- [x] The page identifies the intended learner as an adult learner returning to study, the task as completing a first 20-minute study session, and the barrier as cognitive overload and poor wayfinding rather than lack of motivation.
-- [x] The page clearly identifies the October 17–November 20, 2026 event contribution window and distinguishes the pre-existing foundation from work completed during the event window.
+## Completed
 
-## Working prototype flow
-- [x] The learner can choose a learning topic or goal and indicate their current confidence level.
-- [x] The prototype generates a personalized plain-language first step that reduces unclear vocabulary and says exactly where to begin.
-- [x] The prototype presents a structured 20-minute micro-plan broken into small, time-boxed actions.
-- [x] The learner can complete a post-session confidence check with a manageable / okay / still stuck reflection.
-- [x] The learner can progressively reveal the next step only when ready.
+- [x] Product README, setup instructions, screenshots, live demo, license, env template, privacy notes, adaptive-learning notes, and accessibility audit are documented.
+- [x] The primary page has Skip to content, visible focus, semantic landmarks, reduced-motion support, persisted reading preferences, high contrast, dyslexia-friendly font, larger text, and line spacing controls.
+- [x] Adaptive learning rules are isolated in `client/src/lib/adaptiveLearning.ts` and covered by edge-case unit tests.
+- [x] Public and protected tRPC route behavior has focused tests.
+- [x] Unused starter dashboards, UI primitives, showcase page, chat/map helpers, and unused AI/image/voice/map server integrations have been removed.
+- [x] Template-only dependencies were removed and `pnpm-lock.yaml` was regenerated.
+- [x] Error, Not Found, empty-plan, and clipboard-blocked states have clear next actions.
 
-## Evidence and transparency
-- [x] The page includes a concrete synthetic before-and-after example showing a dense learning goal becoming a clear first step and 20-minute plan.
-- [x] The learning story covers the problem, intended users, solution, tools, challenges, and lessons learned.
-- [x] The page includes working demo guidance, setup instructions, limitations, screenshots guidance, and a short walkthrough outline.
-- [x] The page states that examples are synthetic or permission-cleared, no private student records or real grades are used, and credits libraries, datasets, assets, AI assistance, and pre-existing work.
+## Deliberate MVP limitations
 
-## Hackathon differentiators
-- [x] The learner can optionally enter their own topic or goal, and the generated first step is personalized to that input.
-- [x] The learner can copy the generated plan or use the browser print flow to save it as a practical one-page study plan.
-- [x] The project includes a transparent validation hypothesis with three concrete future signals: time to first action, perceived manageability, and next-session intent.
-
-## Adaptive access improvements
-- [x] Confidence selection changes the generated plan: gentle, steady, and stretch modes use different action language and practice emphasis.
-- [x] The public product includes Focus view and Larger text reading controls, with keyboard-visible focus states and reduced visual distraction in Focus view.
-- [x] Devpost-facing narrative is stored separately in DEVPOST_SUBMISSION.md and is not rendered in the public product UI.
+- [ ] Add permission-cleared learner testing before making claims about learning outcomes.
+- [ ] Add persisted plans only after defining consent, retention, access, export, and deletion behavior.
+- [ ] Expand the three hand-authored learning paths with teacher-reviewed content.
+- [ ] Perform manual screen-reader, keyboard-only, 200% zoom, and mobile assistive-technology review before a broad public launch.
+- [ ] Replace the owner placeholder in the project story with the actual contributor names and design/testing statement before final submission.

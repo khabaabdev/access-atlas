@@ -209,3 +209,8 @@ a:focus-visible, button:focus-visible, input:focus-visible { outline: 3px solid 
 .art-card-front { background: #8f2d10; color: var(--white); }
 .demo-step-label span { color: #625a50; }
 .learning-note .story-card-number { color: var(--yellow); }
+
+.error-state { min-height: 100vh; display: grid; align-content: center; justify-items: start; gap: 16px; max-width: 680px; margin: 0 auto; padding: 48px 24px; background: var(--paper); color: var(--ink); }
+.error-state h1 { margin: 0; font-family: var(--serif); font-size: clamp(2.6rem, 6vw, 5rem); line-height: .98; letter-spacing: -.05em; }
+.error-state p:not(.eyebrow) { max-width: 42ch; margin: 0 0 8px; color: var(--muted); line-height: 1.7; }
+.copy-error { margin: 10px 0 0; color: var(--orange-dark); font-size: .82rem; line-height: 1.5; }

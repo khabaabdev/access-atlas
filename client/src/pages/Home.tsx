@@ -40,6 +40,7 @@ export default function Home() {
   const [revealed, setRevealed] = useState(false);
   const [reflection, setReflection] = useState("");
   const [copied, setCopied] = useState(false);
+  const [copyError, setCopyError] = useState("");
   const [focusMode, setFocusMode] = useState(() => readPreference("focus"));
   const [largeText, setLargeText] = useState(() => readPreference("large-text"));
   const [dyslexiaMode, setDyslexiaMode] = useState(() => readPreference("dyslexia"));
@@ -72,9 +73,11 @@ export default function Home() {
     try {
       await navigator.clipboard.writeText(planText);
       setCopied(true);
+      setCopyError("");
       window.setTimeout(() => setCopied(false), 1800);
     } catch {
       setCopied(false);
+      setCopyError("Clipboard access is blocked here. Use Print / save PDF to keep your plan.");
     }
   }
 
@@ -217,7 +220,8 @@ export default function Home() {
                   ) : (
                     <div className="next-step-box"><div className="next-step-title"><span><Sparkles size={14} /> REVEALED WHEN READY</span><Check size={16} /></div><strong>{path.nextStep}</strong><p>Keep it small. The goal is a breadcrumb, not a finish line.</p></div>
                   )}
-                  <div className="result-actions"><button onClick={copyPlan}>{copied ? <Check size={14} /> : <Feather size={14} />}{copied ? "Copied" : "Copy plan"}</button><button onClick={() => window.print()}><ArrowUpRight size={14} /> Print / save PDF</button></div>
+                  <div className="result-actions"><button type="button" onClick={copyPlan}>{copied ? <Check size={14} /> : <Feather size={14} />}{copied ? "Copied" : "Copy plan"}</button><button type="button" onClick={() => window.print()}><ArrowUpRight size={14} /> Print / save PDF</button></div>
+                  {copyError && <p className="copy-error" role="status">{copyError}</p>}
                   <div className="reflection-block">
                     <div className="micro-plan-label">AFTER YOUR SESSION</div>
                     <p>How manageable did this feel?</p>

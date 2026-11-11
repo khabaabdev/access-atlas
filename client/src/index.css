@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -15,8 +15,8 @@
   --paper: #f5f0e8;
   --white: #fffdf9;
   --line: #d9d1c4;
-  --orange: #ee6b3b;
-  --orange-dark: #c94f25;
+  --orange: #b74318;
+  --orange-dark: #8f2d10;
   --yellow: #f5c85d;
   --mint: #c8d9c9;
   --blue: #b6cbd2;
@@ -187,3 +187,25 @@ p { line-height: 1.58; }
 .large-text .choice-card small, .large-text .confidence-chip small, .large-text .micro-step p { font-size: 11px; }
 @media (max-width: 900px) { .access-toolbar { width: min(100% - 40px, 680px); justify-content: flex-start; overflow-x: auto; white-space: nowrap; } }
 @media (max-width: 560px) { .access-toolbar { width: calc(100% - 30px); }.access-toolbar > span { margin-right: auto; } }
+
+/* WCAG 2.2 AA baseline improvements */
+.skip-link { position: fixed; z-index: 20; top: 8px; left: 8px; padding: 10px 13px; color: var(--white); background: var(--ink); border: 2px solid var(--orange); transform: translateY(-160%); transition: transform .15s ease; }
+.skip-link:focus { transform: translateY(0); }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+a:focus-visible, button:focus-visible, input:focus-visible { outline: 3px solid var(--orange-dark); outline-offset: 3px; }
+.site-shell.high-contrast { --ink: #000; --paper: #fff; --white: #fff; --muted: #1c1c1c; --line: #5c5c5c; --orange: #a23800; --orange-dark: #7b2600; --yellow: #ffdc58; --mint: #d7f1dd; --blue: #dceeff; }
+.high-contrast .hero-lede, .high-contrast .section-intro > p, .high-contrast .about-card p, .high-contrast .choice-card small, .high-contrast .micro-step p, .high-contrast .result-context { color: #1c1c1c; }
+.dyslexia-mode, .dyslexia-mode button, .dyslexia-mode input { font-family: "Atkinson Hyperlegible", Verdana, Arial, sans-serif; letter-spacing: .015em; }
+.dyslexia-mode .hero-copy h1, .dyslexia-mode .section-intro h2, .dyslexia-mode .result-heading-row h3, .dyslexia-mode .result-empty h3, .dyslexia-mode .story-card h3, .dyslexia-mode .about-card h2, .dyslexia-mode .final-cta h2, .dyslexia-mode .first-step-box strong, .dyslexia-mode .next-step-box strong { font-family: "Atkinson Hyperlegible", Verdana, Arial, sans-serif; letter-spacing: -.015em; }
+.roomy-text p, .roomy-text .micro-step p, .roomy-text .choice-card small, .roomy-text .confidence-chip small { line-height: 1.85; }
+.hero-note, .panel-topline-muted, .choice-card small, .goal-input-label, .goal-input-wrap span, .confidence-chip small, .privacy-note, .micro-time, .footer-date { color: #625a50; }
+.story-card-number, .demo-step-label, .micro-plan-label { color: #8f2d10; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
+}
+
+/* Contrast corrections for decorative and helper text */
+.art-card-front { background: #8f2d10; color: var(--white); }
+.demo-step-label span { color: #625a50; }
+.learning-note .story-card-number { color: var(--yellow); }

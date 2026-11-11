@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   ArrowRight,
   ArrowUpRight,
@@ -88,7 +88,16 @@ const confidenceAdjustments: Record<ConfidenceKey, { label: string; context: str
 };
 
 function scrollToId(id: string) {
-  document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+  const prefersReducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+  document.getElementById(id)?.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth", block: "start" });
+}
+
+function readPreference(key: string) {
+  try {
+    return window.localStorage.getItem(`access-atlas:${key}`) === "true";
+  } catch {
+    return false;
+  }
 }
 
 export default function Home() {
@@ -99,9 +108,22 @@ export default function Home() {
   const [revealed, setRevealed] = useState(false);
   const [reflection, setReflection] = useState("");
   const [copied, setCopied] = useState(false);
-  const [focusMode, setFocusMode] = useState(false);
-  const [largeText, setLargeText] = useState(false);
+  const [focusMode, setFocusMode] = useState(() => readPreference("focus"));
+  const [largeText, setLargeText] = useState(() => readPreference("large-text"));
+  const [dyslexiaMode, setDyslexiaMode] = useState(() => readPreference("dyslexia"));
+  const [highContrast, setHighContrast] = useState(() => readPreference("contrast"));
+  const [roomyText, setRoomyText] = useState(() => readPreference("spacing"));
+  const [accessibilityStatus, setAccessibilityStatus] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const preferences = { focus: focusMode, "large-text": largeText, dyslexia: dyslexiaMode, contrast: highContrast, spacing: roomyText };
+    try {
+      Object.entries(preferences).forEach(([key, value]) => window.localStorage.setItem(`access-atlas:${key}`, String(value)));
+    } catch {
+      // Preferences remain available for the current session when storage is blocked.
+    }
+  }, [dyslexiaMode, focusMode, highContrast, largeText, roomyText]);
 
   const path = useMemo(() => learningPaths[topic], [topic]);
   const confidenceLabel = confidenceOptions.find((item) => item.id === confidence)?.label ?? "Not yet";
@@ -149,9 +171,10 @@ export default function Home() {
   }
 
   return (
-    <div className={`site-shell ${focusMode ? "focus-mode" : ""} ${largeText ? "large-text" : ""}`}>
+    <div className={`site-shell ${focusMode ? "focus-mode" : ""} ${largeText ? "large-text" : ""} ${dyslexiaMode ? "dyslexia-mode" : ""} ${highContrast ? "high-contrast" : ""} ${roomyText ? "roomy-text" : ""}`}>
+      <a className="skip-link" href="#main-content">Skip to main content</a>
       <header className="site-header">
-        <a className="brand" href="#top" aria-label="Access Atlas home">
+        <a className="brand" href="#main-content" aria-label="Access Atlas home">
           <span className="brand-mark"><Compass size={20} strokeWidth={2.3} /></span>
           <span>access atlas</span>
         </a>
@@ -163,24 +186,28 @@ export default function Home() {
         <button className="header-cta" onClick={() => scrollToId("demo")}>
           Build a step <ArrowUpRight size={15} />
         </button>
-        <button className="menu-button" aria-label="Open navigation" onClick={() => setMenuOpen(!menuOpen)}>
+        <button className="menu-button" aria-label={menuOpen ? "Close navigation" : "Open navigation"} aria-expanded={menuOpen} aria-controls="mobile-navigation" onClick={() => setMenuOpen(!menuOpen)}>
           {menuOpen ? <X size={20} /> : <Menu size={20} />}
         </button>
       </header>
-      <div className="access-toolbar page-width" aria-label="Reading options">
+      <aside className="access-toolbar page-width" aria-label="Reading options">
         <span>Reading options</span>
-        <button onClick={() => setFocusMode((value) => !value)}><Eye size={13} /> {focusMode ? "Exit focus view" : "Focus view"}</button>
-        <button onClick={() => setLargeText((value) => !value)}><Type size={13} /> {largeText ? "Default text" : "Larger text"}</button>
-      </div>
+        <button aria-pressed={focusMode} onClick={() => { const next = !focusMode; setFocusMode(next); setAccessibilityStatus(`Focus view ${next ? "on" : "off"}.`); }}><Eye size={13} /> {focusMode ? "Exit focus view" : "Focus view"}</button>
+        <button aria-pressed={largeText} onClick={() => { const next = !largeText; setLargeText(next); setAccessibilityStatus(`Larger text ${next ? "on" : "off"}.`); }}><Type size={13} /> {largeText ? "Default text" : "Larger text"}</button>
+        <button aria-pressed={dyslexiaMode} onClick={() => { const next = !dyslexiaMode; setDyslexiaMode(next); setAccessibilityStatus(`Dyslexia-friendly font ${next ? "on" : "off"}.`); }}>Aa&nbsp; Dyslexia-friendly font</button>
+        <button aria-pressed={highContrast} onClick={() => { const next = !highContrast; setHighContrast(next); setAccessibilityStatus(`High contrast ${next ? "on" : "off"}.`); }}>◐&nbsp; High contrast</button>
+        <button aria-pressed={roomyText} onClick={() => { const next = !roomyText; setRoomyText(next); setAccessibilityStatus(`Extra line spacing ${next ? "on" : "off"}.`); }}>↕&nbsp; Line spacing</button>
+        <span className="sr-only" role="status" aria-live="polite">{accessibilityStatus}</span>
+      </aside>
       {menuOpen && (
-        <div className="mobile-menu">
+        <div className="mobile-menu" id="mobile-navigation">
           <a href="#story" onClick={() => setMenuOpen(false)}>How it works</a>
           <a href="#demo" onClick={() => setMenuOpen(false)}>Try it</a>
           <a href="#about" onClick={() => setMenuOpen(false)}>About</a>
         </div>
       )}
 
-      <main id="top">
+      <main id="main-content" tabIndex={-1}>
         <section className="hero-section page-width">
           <div className="hero-copy">
             <div className="eyebrow"><span className="eyebrow-dot" /> A calmer way to learn</div>
@@ -230,7 +257,7 @@ export default function Home() {
               <h3>What are you trying to move forward?</h3>
               <div className="choice-stack">
                 {(Object.keys(learningPaths) as TopicKey[]).map((key) => (
-                  <button key={key} className={`choice-card ${topic === key ? "selected" : ""}`} onClick={() => { setTopic(key); setBuilt(false); }}>
+                  <button key={key} type="button" aria-pressed={topic === key} className={`choice-card ${topic === key ? "selected" : ""}`} onClick={() => { setTopic(key); setBuilt(false); }}>
                     <span className="choice-radio">{topic === key && <span />}</span>
                     <span><strong>{learningPaths[key].label}</strong><small>{key === "topic" ? "Make sense of a subject that feels big" : key === "exam" ? "Turn a syllabus into a starting point" : "Learn by following a real example"}</small></span>
                     <ChevronRight size={17} className="choice-arrow" />
@@ -244,7 +271,7 @@ export default function Home() {
                 <h3>How does it feel right now?</h3>
                 <div className="confidence-row">
                   {confidenceOptions.map((item) => (
-                    <button key={item.id} className={`confidence-chip ${confidence === item.id ? "selected" : ""}`} onClick={() => { setConfidence(item.id); setBuilt(false); }}>
+                    <button key={item.id} type="button" aria-pressed={confidence === item.id} className={`confidence-chip ${confidence === item.id ? "selected" : ""}`} onClick={() => { setConfidence(item.id); setBuilt(false); }}>
                       <strong>{item.label}</strong><small>{item.note}</small>
                     </button>
                   ))}
@@ -288,7 +315,7 @@ export default function Home() {
                     <p>How manageable did this feel?</p>
                     <div className="reflection-row">
                       {["Manageable", "Okay-ish", "Still stuck"].map((answer) => (
-                        <button key={answer} className={`reflection-chip ${reflection === answer ? "selected" : ""}`} onClick={() => setReflection(answer)}>{reflection === answer && <Check size={13} />}{answer}</button>
+                        <button key={answer} type="button" aria-pressed={reflection === answer} className={`reflection-chip ${reflection === answer ? "selected" : ""}`} onClick={() => setReflection(answer)}>{reflection === answer && <Check size={13} />}{answer}</button>
                       ))}
                     </div>
                     {reflection && <div className="reflection-thanks"><Feather size={14} /> Noted. Your next session can start from here.</div>}

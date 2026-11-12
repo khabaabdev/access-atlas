@@ -22,7 +22,7 @@ Access Atlas is designed for adult learners returning to study, preparing for an
 ### Adaptive learning and accessibility modes
 The adaptive logic is deliberately transparent and rule-based. The selected goal chooses a learning path, the optional custom goal personalizes the first step, and the confidence level changes specific plan actions. “Not yet” uses smaller, simpler actions; “A little” uses the baseline plan; “Ready-ish” adds outcome-setting and a practice check.
 
-The current accessibility controls include Focus view, which removes the decorative hero artwork and expands the main content area, and Larger text, which increases the reading scale. The accessibility roadmap and known gaps are documented in [`docs/ACCESSIBILITY.md`](docs/ACCESSIBILITY.md).
+The current accessibility controls include Focus view, which removes the decorative hero artwork and expands the main content area; Larger text; Dyslexia-friendly font; High contrast; and Line spacing. The accessibility roadmap and known gaps are documented in [`docs/ACCESSIBILITY.md`](docs/ACCESSIBILITY.md).
 
 ## Screenshots
 
@@ -101,7 +101,7 @@ Next steps should be guided by permission-cleared user testing: measure time to 
 
 This project was scaffolded and built with an AI agent (Manus). The product-specific flow, copy, visual system, adaptive rules, accessibility controls, and documentation were iterated in the project repository.
 
-**My design, decisions, and testing:** _[Project owner: describe what you designed, decided, and tested yourself here. Do not leave this placeholder in the final submission.]
+**Project owner and contributing team member:** `khabaabdev` — product direction, interaction design, engineering, accessibility review, and testing for this repository.
 
 ## License
 
